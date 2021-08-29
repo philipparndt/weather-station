@@ -1,0 +1,5 @@
+- platform: dallas
+  address: 0xC50119384FCC0328 #temp_sensor1
+  name: "Indoor Temperature"
+  id: indoor_temperature
+  internal: true

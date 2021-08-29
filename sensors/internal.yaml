@@ -1,0 +1,5 @@
+- platform: dallas
+  address: 0xD20000060A2AC428
+  name: "Internal Temperature"
+  id: internal_temperature
+  internal: true

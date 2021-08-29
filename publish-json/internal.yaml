@@ -1,0 +1,15 @@
+# Publish values in json message and filter NaN values (they will not get published)
+# Used `uptime` platform to execute the publish in a fixed interval.
+
+- platform: uptime
+  id: publish_temperature_internal_json
+  update_interval: ${publish_temperature_interval}
+  on_value:
+    if:
+      condition:
+        lambda: 'return !isnan(id(internal_temperature).state);'
+      then:
+        - mqtt.publish_json:
+            topic: ${base_topic}/internal
+            payload: |-
+              root["temperature"] = id(internal_temperature).state;

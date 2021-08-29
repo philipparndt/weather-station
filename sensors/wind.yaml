@@ -1,0 +1,14 @@
+- platform: pulse_counter
+  pin: GPIO4
+  update_interval: 1s
+  filters:
+      - lambda: |-
+          if (x == 0) {
+            return 0;
+          } 
+          else {
+            return (1.761 / (1 + x / 60) + 3.013 * x / 60);
+          }
+  internal: true
+  name: "Wind Speed"
+  id: wind

@@ -1,0 +1,15 @@
+# Publish values in json message and filter NaN values (they will not get published)
+# Used `uptime` platform to execute the publish in a fixed interval.
+
+- platform: uptime
+  id: publish_wind_json
+  update_interval: ${publish_wind_interval}
+  on_value:
+    if:
+      condition:
+        lambda: 'return !isnan(id(wind).state);'
+      then:
+        - mqtt.publish_json:
+            topic: ${base_topic}/wind
+            payload: |-
+              root["wind"] = id(wind).state;
