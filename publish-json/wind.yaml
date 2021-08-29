@@ -12,4 +12,4 @@
         - mqtt.publish_json:
             topic: ${base_topic}/wind
             payload: |-
-              root["wind"] = id(wind).state;
+              root["wind"] = round(id(wind).state * 10) / 10;

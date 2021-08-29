@@ -12,4 +12,4 @@
         - mqtt.publish_json:
             topic: ${base_topic}/outdoor
             payload: |-
-              root["temperature"] = id(outdoor_temperature).state;
+              root["temperature"] = round(id(outdoor_temperature).state * 100) / 100;            
