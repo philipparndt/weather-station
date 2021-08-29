@@ -1,0 +1,194 @@
+substitutions:
+  temperature_update_time: 5s
+  publish_wind_interval: 1s
+  publish_temperature_interval: 60s
+  device_name: "weather"
+  appversion: "1.0.0"
+  base_topic: "esphome/weather"
+
+esphome:
+  name: $device_name
+  platform: ESP32
+  board: esp32-poe-iso
+
+# Enable logging
+logger:
+  level: INFO
+
+# Enable Home Assistant API
+api:
+  password: "1234"
+
+ota:
+  password: "1234"
+
+ethernet:
+  type: LAN8720
+  mdc_pin: GPIO23
+  mdio_pin: GPIO18
+  clk_mode: GPIO17_OUT
+  phy_addr: 0
+  power_pin: GPIO12
+  domain: .rnd7.de
+  
+  manual_ip:
+    static_ip: 192.168.3.213
+    gateway: 192.168.3.3
+    subnet: 255.255.255.0
+
+web_server:
+  port: 80
+
+mqtt: 
+  broker: 192.168.3.15
+  port: 1883
+  topic_prefix: ${base_topic}
+  keepalive: 60s
+
+# Example configuration entry
+dallas:
+  - pin: GPIO5
+    update_interval: ${temperature_update_time}
+
+# Individual sensors
+sensor:
+  - platform: dallas
+    address: 0xD20000060A2AC428
+    name: "Internal Temperature"
+    id: internal_temperature
+    internal: true
+
+  - platform: dallas
+    address: 0xC50119384FCC0328 #temp_sensor1
+    name: "Indoor Temperature"
+    id: indoor_temperature
+    internal: true
+
+  - platform: dallas
+    address: 0xC00119385912B928 #temp_sensor2
+    name: "Outdoor Temperature"
+    id: outdoor_temperature
+    internal: true
+
+  - platform: pulse_counter
+    pin: GPIO4
+    update_interval: 1s
+    filters:
+        - lambda: |-
+           if (x == 0) {
+             return 0;
+           } 
+           else {
+             return (1.761 / (1 + x / 60) + 3.013 * x / 60);
+           }
+    internal: true
+    name: "Wind Speed"
+    id: wind
+    discovery: false
+
+  - platform: uptime
+    id: publish_wind_json
+    update_interval: ${publish_wind_interval}
+    on_value:
+      if:
+        condition:
+          lambda: 'return !isnan(id(wind).state);'
+        then:
+          - mqtt.publish_json:
+              topic: ${base_topic}/wind
+              payload: |-
+                root["wind"] = id(wind).state;
+
+  - platform: uptime
+    id: publish_temperature_internal_json
+    update_interval: ${publish_temperature_interval}
+    on_value:
+      if:
+        condition:
+          lambda: 'return !isnan(id(internal_temperature).state);'
+        then:
+          - mqtt.publish_json:
+              topic: ${base_topic}/internal
+              payload: |-
+                root["temperature"] = id(internal_temperature).state;
+
+  - platform: uptime
+    id: publish_temperature_outdoor_json
+    update_interval: ${publish_temperature_interval}
+    on_value:
+      if:
+        condition:
+          lambda: 'return !isnan(id(outdoor_temperature).state);'
+        then:
+          - mqtt.publish_json:
+              topic: ${base_topic}/outdoor
+              payload: |-
+                root["temperature"] = id(outdoor_temperature).state;
+
+
+  - platform: uptime
+    id: publish_temperature_indoor_json
+    update_interval: ${publish_temperature_interval}
+    on_value:
+      if:
+        condition:
+          lambda: 'return !isnan(id(indoor_temperature).state);'
+        then:
+          - mqtt.publish_json:
+              topic: ${base_topic}/indoor
+              payload: |-
+                root["temperature"] = id(indoor_temperature).state;
+
+
+text_sensor:
+    
+  # Version Text Sensor
+  # see: https://esphome.io/components/text_sensor/version.html?highlight=platform%20version
+  - platform: version
+    name: $device_name Version
+    id: appver
+    internal: true
+  
+i2c:
+  sda: GPIO13
+  scl: GPIO16
+
+font:
+  - file: 'slkscr.ttf'
+    id: font1
+    size: 8
+
+  - file: 'BebasNeue-Regular.ttf'
+    id: font2
+    size: 48
+
+  - file: 'arial.ttf'
+    id: font3
+    size: 14
+
+display:
+  - platform: ssd1306_i2c
+    model: "SSD1306 128x64"
+    address: 0x3C
+    lambda: |-
+      it.printf(64, 0, id(font1), TextAlign::TOP_CENTER, "MQTT Weather");
+      it.printf(0, 60, id(font1), TextAlign::BASELINE_LEFT, "km/h");
+      it.printf(127, 60, id(font1), TextAlign::BASELINE_RIGHT, "Celcius");
+
+      if (id(wind).has_state()) {
+        it.printf(0, 50, id(font2), TextAlign::BASELINE_LEFT , "%.0f", id(wind).state);
+      }
+
+      // Print inside temperature (from homeassistant sensor)
+      if (id(internal_temperature).has_state()) {
+        it.printf(75, 26, id(font1), TextAlign::BASELINE_LEFT , "int");
+        it.printf(127, 26, id(font3), TextAlign::BASELINE_RIGHT , "%.1f°", id(internal_temperature).state);
+      }
+      if (id(indoor_temperature).has_state()) {
+        it.printf(75, 38, id(font1), TextAlign::BASELINE_LEFT , "in");
+        it.printf(127, 38, id(font3), TextAlign::BASELINE_RIGHT , "%.1f°", id(indoor_temperature).state);
+      }
+      if (id(outdoor_temperature).has_state()) {
+        it.printf(75, 50, id(font1), TextAlign::BASELINE_LEFT , "out");
+        it.printf(127, 50, id(font3), TextAlign::BASELINE_RIGHT , "%.1f°", id(outdoor_temperature).state);
+      }
