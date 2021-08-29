@@ -1,0 +1,12 @@
+font:
+  - file: 'ui/fonts/slkscr.ttf'
+    id: font1
+    size: 8
+
+  - file: 'ui/fonts/BebasNeue-Regular.ttf'
+    id: font2
+    size: 48
+
+  - file: 'ui/fonts/arial.ttf'
+    id: font3
+    size: 14

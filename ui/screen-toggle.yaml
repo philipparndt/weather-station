@@ -1,0 +1,14 @@
+# Publish values in json message and filter NaN values (they will not get published)
+# Used `uptime` platform to execute the publish in a fixed interval.
+
+- platform: uptime
+  id: toggle_display_screen_page
+  update_interval: 3s
+  on_value:
+    then:
+      - lambda: |-
+          id(current_screen) += 1;
+
+          if (id(current_screen) > 1) {
+            id(current_screen) = 0;
+          }

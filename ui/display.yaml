@@ -1,0 +1,38 @@
+display:
+  - platform: ssd1306_i2c
+    model: "SSD1306 128x64"
+    address: 0x3C
+    lambda: |-
+
+      it.print(64, 0, id(font1), TextAlign::TOP_CENTER, "MQTT Weather");
+      it.print(0, 60, id(font1), TextAlign::BASELINE_LEFT, "km/h");
+
+      if (id(wind).has_state()) {
+        it.printf(0, 50, id(font2), TextAlign::BASELINE_LEFT, "%.0f", id(wind).state);
+      }
+
+      if (id(current_screen) == 0) {
+        if (id(internal_temperature).has_state()) {
+          it.print(75, 26, id(font1), TextAlign::BASELINE_LEFT, "int");
+          it.printf(127, 26, id(font3), TextAlign::BASELINE_RIGHT, "%.1f°", id(internal_temperature).state);
+        }
+        if (id(indoor_temperature).has_state()) {
+          it.print(75, 38, id(font1), TextAlign::BASELINE_LEFT, "in");
+          it.printf(127, 38, id(font3), TextAlign::BASELINE_RIGHT, "%.1f°", id(indoor_temperature).state);
+        }
+        if (id(outdoor_temperature).has_state()) {
+          it.print(75, 50, id(font1), TextAlign::BASELINE_LEFT, "out");
+          it.printf(127, 50, id(font3), TextAlign::BASELINE_RIGHT, "%.1f°", id(outdoor_temperature).state);
+        }
+
+        it.print(127, 60, id(font1), TextAlign::BASELINE_RIGHT, "Celcius");
+      }
+      else if (id(current_screen) == 1) {
+        if (id(internal_temperature).has_state()) {
+          it.print(75, 26, id(font1), TextAlign::BASELINE_LEFT, "int");
+          it.printf(127, 26, id(font3), TextAlign::BASELINE_RIGHT, "54%%");
+        }
+        it.print(127, 60, id(font1), TextAlign::BASELINE_RIGHT, "Humidity");
+      }
+
+      // it.printf(30, 20, id(font1), TextAlign::BASELINE_LEFT, "scr %d", id(current_screen));

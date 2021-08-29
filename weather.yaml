@@ -7,14 +7,22 @@ substitutions:
   base_topic: "esphome/weather"
 
 esphome:
-  name: $device_name
+  name: ${device_name}
   platform: ESP32
   board: esp32-poe-iso
+
+globals:
+  - id: current_screen
+    type: int
+    restore_value: no
+    initial_value: '0'
 
 packages:
   mqtt: !include config/mqtt.yaml
   ethernet: !include config/ethernet.yaml
-  
+  font: !include ui/fonts/fonts.yaml
+  display: !include ui/display.yaml
+
 # Enable logging
 logger:
   level: INFO
@@ -34,6 +42,10 @@ dallas:
   - pin: GPIO5
     update_interval: ${temperature_update_time}
 
+i2c:
+  sda: GPIO13
+  scl: GPIO16
+
 # Individual sensors
 sensor:
   - <<: !include sensors/wind.yaml
@@ -41,59 +53,18 @@ sensor:
   - <<: !include sensors/indoor.yaml
   - <<: !include sensors/outdoor.yaml
 
-  - <<: !include publish-json/wind.yaml
-  - <<: !include publish-json/internal.yaml
-  - <<: !include publish-json/indoor.yaml
-  - <<: !include publish-json/outdoor.yaml
+  - <<: !include mqtt/json/wind.yaml
+  - <<: !include mqtt/json/internal.yaml
+  - <<: !include mqtt/json/indoor.yaml
+  - <<: !include mqtt/json/outdoor.yaml
+
+  - <<: !include ui/screen-toggle.yaml
 
 text_sensor:
   # Version Text Sensor
   # see: https://esphome.io/components/text_sensor/version.html?highlight=platform%20version
   - platform: version
-    name: $device_name Version
+    name: ${device_name} Version
     id: appver
     internal: true
   
-i2c:
-  sda: GPIO13
-  scl: GPIO16
-
-font:
-  - file: 'slkscr.ttf'
-    id: font1
-    size: 8
-
-  - file: 'BebasNeue-Regular.ttf'
-    id: font2
-    size: 48
-
-  - file: 'arial.ttf'
-    id: font3
-    size: 14
-
-display:
-  - platform: ssd1306_i2c
-    model: "SSD1306 128x64"
-    address: 0x3C
-    lambda: |-
-      it.printf(64, 0, id(font1), TextAlign::TOP_CENTER, "MQTT Weather");
-      it.printf(0, 60, id(font1), TextAlign::BASELINE_LEFT, "km/h");
-      it.printf(127, 60, id(font1), TextAlign::BASELINE_RIGHT, "Celcius");
-
-      if (id(wind).has_state()) {
-        it.printf(0, 50, id(font2), TextAlign::BASELINE_LEFT , "%.0f", id(wind).state);
-      }
-
-      // Print inside temperature (from homeassistant sensor)
-      if (id(internal_temperature).has_state()) {
-        it.printf(75, 26, id(font1), TextAlign::BASELINE_LEFT , "int");
-        it.printf(127, 26, id(font3), TextAlign::BASELINE_RIGHT , "%.1f°", id(internal_temperature).state);
-      }
-      if (id(indoor_temperature).has_state()) {
-        it.printf(75, 38, id(font1), TextAlign::BASELINE_LEFT , "in");
-        it.printf(127, 38, id(font3), TextAlign::BASELINE_RIGHT , "%.1f°", id(indoor_temperature).state);
-      }
-      if (id(outdoor_temperature).has_state()) {
-        it.printf(75, 50, id(font1), TextAlign::BASELINE_LEFT , "out");
-        it.printf(127, 50, id(font3), TextAlign::BASELINE_RIGHT , "%.1f°", id(outdoor_temperature).state);
-      }
