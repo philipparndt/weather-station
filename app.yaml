@@ -10,6 +10,8 @@ esphome:
   name: ${device_name}
   platform: ESP32
   board: esp32-poe-iso
+  includes:
+    - eth/eth-address.h
 
 globals:
   - id: current_screen
@@ -18,14 +20,15 @@ globals:
     initial_value: '0'
 
 packages:
-  mqtt: !include config/mqtt.yaml
+  mqtt:     !include config/mqtt.yaml
   ethernet: !include config/ethernet.yaml
-  font: !include ui/fonts/fonts.yaml
-  display: !include ui/display.yaml
+  i2c:      !include config/i2c.yaml
+  font:     !include ui/fonts/fonts.yaml
+  display:  !include ui/display.yaml
 
 # Enable logging
 logger:
-  level: INFO
+  level: WARN
 
 # Enable Home Assistant API
 api:
@@ -42,17 +45,16 @@ dallas:
   - pin: GPIO5
     update_interval: ${temperature_update_time}
 
-i2c:
-  sda: GPIO13
-  scl: GPIO16
-
 # Individual sensors
 sensor:
+  - <<: !include sensors/dht.yaml
   - <<: !include sensors/wind.yaml
   - <<: !include sensors/internal.yaml
   - <<: !include sensors/indoor.yaml
   - <<: !include sensors/outdoor.yaml
 
+  - <<: !include mqtt/json/dht-humidity.yaml
+  - <<: !include mqtt/json/dht-temperature.yaml
   - <<: !include mqtt/json/wind.yaml
   - <<: !include mqtt/json/internal.yaml
   - <<: !include mqtt/json/indoor.yaml
@@ -68,3 +70,12 @@ text_sensor:
     id: appver
     internal: true
   
+  - platform: custom
+    id: eth_address
+    lambda: |-
+      auto eth_address_sensor = new EthAddressTextSensor();
+      App.register_component(eth_address_sensor);
+      return {eth_address_sensor};
+
+    text_sensors:
+      name: "My Custom Text Sensor"

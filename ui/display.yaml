@@ -5,6 +5,7 @@ display:
     lambda: |-
 
       it.print(64, 0, id(font1), TextAlign::TOP_CENTER, "MQTT Weather");
+
       it.print(0, 60, id(font1), TextAlign::BASELINE_LEFT, "km/h");
 
       if (id(wind).has_state()) {
@@ -28,11 +29,16 @@ display:
         it.print(127, 60, id(font1), TextAlign::BASELINE_RIGHT, "Celcius");
       }
       else if (id(current_screen) == 1) {
-        if (id(internal_temperature).has_state()) {
-          it.print(75, 26, id(font1), TextAlign::BASELINE_LEFT, "int");
-          it.printf(127, 26, id(font3), TextAlign::BASELINE_RIGHT, "54%%");
+        if (id(indoor_dht_humidity).has_state()) {
+          it.print(75, 26, id(font1), TextAlign::BASELINE_LEFT, "in");
+          it.printf(127, 26, id(font3), TextAlign::BASELINE_RIGHT, "%.1f%%", id(indoor_dht_humidity).state);
         }
-        it.print(127, 60, id(font1), TextAlign::BASELINE_RIGHT, "Humidity");
+        if (id(indoor_dht_temperature).has_state()) {
+          it.print(75, 38, id(font1), TextAlign::BASELINE_LEFT, "in");
+          it.printf(127, 38, id(font3), TextAlign::BASELINE_RIGHT, "%.1f°", id(indoor_dht_temperature).state);
+        }
+
+        it.print(127, 60, id(font1), TextAlign::BASELINE_RIGHT, "Humidity / Celcius");
       }
 
       // it.printf(30, 20, id(font1), TextAlign::BASELINE_LEFT, "scr %d", id(current_screen));

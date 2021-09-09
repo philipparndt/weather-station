@@ -1,0 +1,13 @@
+- platform: dht
+  pin: GPIO14
+  model: AM2302
+  temperature:
+    name: "Indoor Reference Temperature"
+    id: indoor_dht_temperature
+    internal: true
+  humidity:
+    name: "Indoor Humidity"
+    id: indoor_dht_humidity
+    internal: true
+  update_interval: 10s
+  id: indoor_dht
