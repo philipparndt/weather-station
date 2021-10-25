@@ -10,6 +10,7 @@
         lambda: 'return !isnan(id(indoor_dht_humidity).state);'
       then:
         - mqtt.publish_json:
-            topic: ${base_topic}/indoor_humidity
+            topic: ${base_topic}/indoor_dht
             payload: |-
               root["humidity"] = round(id(indoor_dht_humidity).state * 100) / 100;
+              root["temperature"] = round(id(indoor_dht_temperature).state * 100) / 100;

@@ -1,10 +1,10 @@
 substitutions:
   temperature_update_time: 5s
-  publish_wind_interval: 1s
+  publish_wind_interval: 5s
   publish_temperature_interval: 60s
   device_name: "weather"
   appversion: "1.0.0"
-  base_topic: "esphome/weather"
+  base_topic: "garden/weather"
 
 esphome:
   name: ${device_name}
@@ -52,9 +52,8 @@ sensor:
   - <<: !include sensors/internal.yaml
   - <<: !include sensors/indoor.yaml
   - <<: !include sensors/outdoor.yaml
+  - <<: !include sensors/light.yaml
 
-  - <<: !include mqtt/json/dht-humidity.yaml
-  - <<: !include mqtt/json/dht-temperature.yaml
   - <<: !include mqtt/json/wind.yaml
   - <<: !include mqtt/json/internal.yaml
   - <<: !include mqtt/json/indoor.yaml

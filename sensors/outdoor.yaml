@@ -1,6 +1,6 @@
 - platform: dallas
-  #address: 0xC00119385912B928 #temp_sensor2
-  address: 0xC00119385B9E8928 #temp_sensor3
+  address: 0xC00119385912B928 #temp_sensor2
+  #address: 0xC00119385B9E8928 #temp_sensor3
   name: "Outdoor Temperature"
   id: outdoor_temperature
   internal: true
