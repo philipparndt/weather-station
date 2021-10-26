@@ -47,17 +47,18 @@ dallas:
 
 # Individual sensors
 sensor:
-  - <<: !include sensors/dht.yaml
   - <<: !include sensors/wind.yaml
   - <<: !include sensors/internal.yaml
   - <<: !include sensors/indoor.yaml
   - <<: !include sensors/outdoor.yaml
   - <<: !include sensors/light.yaml
+  - <<: !include sensors/dht.yaml
 
   - <<: !include mqtt/json/wind.yaml
   - <<: !include mqtt/json/internal.yaml
   - <<: !include mqtt/json/indoor.yaml
   - <<: !include mqtt/json/outdoor.yaml
+  - <<: !include mqtt/json/dht.yaml
 
   - <<: !include ui/screen-toggle.yaml
 

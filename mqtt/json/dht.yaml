@@ -7,7 +7,7 @@
   on_value:
     if:
       condition:
-        lambda: 'return !isnan(id(indoor_dht_humidity).state);'
+        lambda: 'return !isnan(id(indoor_dht_humidity).state) && !isnan(id(indoor_dht_temperature).state);'
       then:
         - mqtt.publish_json:
             topic: ${base_topic}/indoor_dht
