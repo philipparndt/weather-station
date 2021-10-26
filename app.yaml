@@ -23,8 +23,8 @@ packages:
   mqtt:     !include config/mqtt.yaml
   ethernet: !include config/ethernet.yaml
   i2c:      !include config/i2c.yaml
-  font:     !include ui/fonts/fonts.yaml
-  display:  !include ui/display.yaml
+#  font:     !include ui/fonts/fonts.yaml
+#  display:  !include ui/display.yaml
 
 # Enable logging
 logger:
@@ -60,7 +60,7 @@ sensor:
   - <<: !include mqtt/json/outdoor.yaml
   - <<: !include mqtt/json/dht.yaml
 
-  - <<: !include ui/screen-toggle.yaml
+#  - <<: !include ui/screen-toggle.yaml
 
 text_sensor:
   # Version Text Sensor
