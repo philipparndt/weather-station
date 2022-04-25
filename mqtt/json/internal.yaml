@@ -11,5 +11,6 @@
       then:
         - mqtt.publish_json:
             topic: ${base_topic}/internal
+            retain: true
             payload: |-
               root["temperature"] = round(id(internal_temperature).state * 100) / 100;

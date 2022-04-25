@@ -2,15 +2,15 @@
 # Used `uptime` platform to execute the publish in a fixed interval.
 
 - platform: uptime
-  id: publish_temperature_indoor_json
+  id: publish_illuminance_indoor_json
   update_interval: ${publish_temperature_interval}
   on_value:
     if:
       condition:
-        lambda: 'return !isnan(id(indoor_temperature).state);'
+        lambda: 'return !isnan(id(indoor_illuminance).state);'
       then:
         - mqtt.publish_json:
-            topic: ${base_topic}/indoor
+            topic: ${base_topic}/indoor_illuminance
             retain: true
             payload: |-
-              root["temperature"] = round(id(indoor_temperature).state * 100) / 100;
+              root["illuminance"] = round(id(indoor_illuminance).state * 100) / 100;
