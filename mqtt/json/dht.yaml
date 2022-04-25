@@ -11,7 +11,7 @@
       then:
         - mqtt.publish_json:
             topic: ${base_topic}/indoor_dht
-            retain: true
+            retain: True
             payload: |-
               root["humidity"] = round(id(indoor_dht_humidity).state * 100) / 100;
               root["temperature"] = round(id(indoor_dht_temperature).state * 100) / 100;

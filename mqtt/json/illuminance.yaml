@@ -11,6 +11,6 @@
       then:
         - mqtt.publish_json:
             topic: ${base_topic}/indoor_illuminance
-            retain: true
+            retain: True
             payload: |-
               root["illuminance"] = round(id(indoor_illuminance).state * 100) / 100;
