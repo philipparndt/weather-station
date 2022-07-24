@@ -1,5 +1,5 @@
 mqtt: 
-  broker: 192.168.3.15
+  broker: mqtt.rnd7.de
   port: 1883
   topic_prefix: ${base_topic}
   keepalive: 60s
