@@ -1,0 +1,12 @@
+# Publish values in json message and filter NaN values (they will not get published)
+# Used `uptime` platform to execute the publish in a fixed interval.
+
+- platform: uptime
+  id: publish_energy_json
+  update_interval: ${publish_energy_interval}
+  on_value:
+    - mqtt.publish:
+        topic: ${base_topic}/energy
+        retain: True
+        payload: !lambda |-
+          return id(energy_sensor).state.c_str();

@@ -11,3 +11,4 @@
 weather/
 coverage/
 .idea/
+*.bin

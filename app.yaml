@@ -1,5 +1,6 @@
 substitutions:
   temperature_update_time: 5s
+  publish_energy_interval: 5s
   publish_wind_interval: 5s
   publish_temperature_interval: 60s
   device_name: "weather"
@@ -12,6 +13,7 @@ esphome:
   board: esp32-poe-iso
   includes:
     - eth/eth-address.h
+    - deye_uart_read_line_sensor.h
 
 globals:
   - id: current_screen
@@ -28,7 +30,8 @@ packages:
 
 # Enable logging
 logger:
-  level: WARN
+  level: DEBUG
+  #level: VERBOSE
 
 # Enable Home Assistant API
 api:
@@ -39,6 +42,15 @@ ota:
 
 web_server:
   port: 80
+
+uart:
+  id: uart_bus
+#  tx_pin: D0
+  rx_pin: GPIO36
+  baud_rate: 9600
+  data_bits: 8
+  parity: NONE
+  stop_bits: 1
 
 # Example configuration entry
 dallas:
@@ -60,6 +72,7 @@ sensor:
   - <<: !include mqtt/json/outdoor.yaml
   - <<: !include mqtt/json/illuminance.yaml
   - <<: !include mqtt/json/dht.yaml
+  - <<: !include mqtt/json/energy.yaml
 
 #  - <<: !include ui/screen-toggle.yaml
 
@@ -80,3 +93,11 @@ text_sensor:
 
     text_sensors:
       name: "My Custom Text Sensor"
+
+  - platform: custom
+    lambda: |-
+      auto my_custom_sensor = new DeyeUartReadLineSensor(id(uart_bus));
+      App.register_component(my_custom_sensor);
+      return {my_custom_sensor};
+    text_sensors:
+      id: "energy_sensor"
