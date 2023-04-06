@@ -6,6 +6,7 @@ substitutions:
   device_name: "weather"
   appversion: "1.0.0"
   base_topic: "garden/weather"
+  base_topic_prod: "garden/weather"
 
 esphome:
   name: ${device_name}
@@ -30,7 +31,8 @@ packages:
 
 # Enable logging
 logger:
-  level: DEBUG
+  level: INFO
+  #level: DEBUG
   #level: VERBOSE
 
 # Enable Home Assistant API

@@ -7,7 +7,7 @@
   on_value:
     if:
       condition:
-        lambda: 'return !isnan(id(outdoor_temperature).state);'
+        lambda: 'return !isnan(id(outdoor_temperature).state) && id(outdoor_temperature).state != 85;'
       then:
         - mqtt.publish_json:
             topic: ${base_topic}/outdoor

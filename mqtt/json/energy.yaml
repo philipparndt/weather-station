@@ -6,7 +6,7 @@
   update_interval: ${publish_energy_interval}
   on_value:
     - mqtt.publish:
-        topic: ${base_topic}/energy
+        topic: ${base_topic_prod}/energy
         retain: True
         payload: !lambda |-
           return id(energy_sensor).state.c_str();
