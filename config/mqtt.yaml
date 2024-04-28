@@ -1,5 +1,5 @@
 mqtt: 
-  broker: 192.168.3.171
+  broker: 192.168.18.22
   port: 1883
   topic_prefix: ${base_topic}
   keepalive: 60s
