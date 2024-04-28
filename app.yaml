@@ -3,7 +3,7 @@ substitutions:
   publish_energy_interval: 5s
   publish_wind_interval: 5s
   publish_temperature_interval: 60s
-  device_name: "weather"
+  device_name: "weather_station_esp32"
   appversion: "1.0.0"
   base_topic: "garden/weather"
   base_topic_prod: "garden/weather"
