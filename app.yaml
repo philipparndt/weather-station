@@ -40,6 +40,7 @@ api:
   password: "1234"
 
 ota:
+  platform: esphome
   password: "1234"
 
 web_server:
@@ -55,9 +56,10 @@ uart:
   stop_bits: 1
 
 # Example configuration entry
-dallas:
-  - pin: GPIO5
-    update_interval: ${temperature_update_time}
+one_wire:
+  - platform: gpio
+    pin: GPIO5
+    #update_interval: ${temperature_update_time}
 
 # Individual sensors
 sensor:
