@@ -1,0 +1,20 @@
+binary_sensor:
+  - platform: gpio
+    pin:
+      number: GPIO2
+      mode: INPUT_PULLUP
+      inverted: true
+
+    name: "Unifi Button"
+
+    filters:
+      - delayed_on: 50ms
+
+    on_press:
+      - lambda: |-
+          if (id(device_uptime).state > 2) {
+            ESP_LOGD("main", "Unifi button pressed after 2 seconds of uptime.");
+            id(ultra_garden_lock).open();
+          } else {
+            ESP_LOGW("main", "Unifi button pressed before 2 seconds of uptime. Not sending unlock command.");
+          }

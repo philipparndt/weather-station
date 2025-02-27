@@ -3,7 +3,7 @@ substitutions:
   publish_energy_interval: 5s
   publish_wind_interval: 5s
   publish_temperature_interval: 60s
-  device_name: "weather_station_esp32"
+  device_name: "weather-station-esp32"
   appversion: "1.0.0"
   base_topic: "garden/weather"
   base_topic_prod: "garden/weather"
@@ -21,6 +21,10 @@ globals:
     type: int
     restore_value: no
     initial_value: '0'
+
+external_components:
+  - source: github://uriyacovy/ESPHome_nuki_lock
+  - source: github://mill1000/esphome-status-text-sensor
 
 packages:
   mqtt:     !include config/mqtt.yaml
@@ -40,6 +44,7 @@ api:
   password: "1234"
 
 ota:
+  platform: "esphome"
   password: "1234"
 
 web_server:
@@ -55,9 +60,9 @@ uart:
   stop_bits: 1
 
 # Example configuration entry
-dallas:
-  - pin: GPIO5
-    update_interval: ${temperature_update_time}
+one_wire:
+  platform: gpio
+  pin: GPIO5
 
 # Individual sensors
 sensor:
@@ -76,6 +81,17 @@ sensor:
   - <<: !include mqtt/json/dht.yaml
   - <<: !include mqtt/json/energy.yaml
 
+  - platform: uptime
+    name: "Device Uptime"
+    id: device_uptime
+    update_interval: 2s  # Check every 5 seconds
+    internal: true
+
+# Nuki
+#<<: !include nuki/nuki.yaml
+#<<: !include nuki/unifi_button.yaml
+
+
 #  - <<: !include ui/screen-toggle.yaml
 
 text_sensor:
@@ -85,16 +101,6 @@ text_sensor:
     name: ${device_name} Version
     id: appver
     internal: true
-  
-  - platform: custom
-    id: eth_address
-    lambda: |-
-      auto eth_address_sensor = new EthAddressTextSensor();
-      App.register_component(eth_address_sensor);
-      return {eth_address_sensor};
-
-    text_sensors:
-      name: "My Custom Text Sensor"
 
   - platform: custom
     lambda: |-
@@ -103,3 +109,6 @@ text_sensor:
       return {my_custom_sensor};
     text_sensors:
       id: "energy_sensor"
+
+  - platform: status
+    name: Status

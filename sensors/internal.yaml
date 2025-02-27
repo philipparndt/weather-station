@@ -1,5 +1,6 @@
-- platform: dallas
+- platform: dallas_temp
   address: 0x4d3c01d0754de928
   name: "Internal Temperature"
   id: internal_temperature
   internal: true
+  update_interval: ${temperature_update_time}

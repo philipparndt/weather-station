@@ -12,3 +12,6 @@ weather/
 coverage/
 .idea/
 *.bin
+*.dec
+*.lck
+fp-info-cache
